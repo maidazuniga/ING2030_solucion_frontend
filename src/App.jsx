@@ -1,35 +1,41 @@
-function App() {
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import Sidebar from "./components/Sidebar.jsx";
+import Home from "./pages/Home.jsx";
+import Patients from "./pages/Patients.jsx";
+
+function AppLayout() {
+  const location = useLocation();
+  
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
+
   return (
-    <div>
-      <nav className="navbar is-primary" role="navigation" aria-label="main navigation">
-        <div className="navbar-brand">
-          <a className="navbar-item" href="/">
-            <h1 className="title is-4 has-text-white">Proyecto Innova</h1>
-          </a>
+    <div className="columns is-gapless" style={{ minHeight: '100vh' }}>
+      
+      {!isAuthPage && (
+        <div className="column is-2">
+          <Sidebar />
         </div>
-      </nav>
+      )}
 
-      <section className="section">
-        <div className="container">
-          <div className="box">
-            <h2 className="title">¡Bienvenido!</h2>
-            <p className="subtitle">
-              Esta es la base de tu proyecto con <strong>React</strong> y <strong>Bulma CSS</strong>.
-            </p>
-            <button className="button is-link">Comenzar</button>
-          </div>
-        </div>
-      </section>
+      <div className="column">
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/pacientes" element={<Patients />} />
+          </Routes>
+        </main>
+      </div>
 
-      <footer className="footer">
-        <div className="content has-text-centered">
-          <p>
-            <strong>Proyecto ING2030</strong> - Construido con React y Bulma.
-          </p>
-        </div>
-      </footer>
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <Router>
+      <AppLayout />
+    </Router>
+  );
+}
+
+export default App;
