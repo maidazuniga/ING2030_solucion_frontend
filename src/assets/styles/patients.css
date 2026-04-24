@@ -1,0 +1,71 @@
+.landing-pacientes {
+  background-color: #e8f3ff;
+}
+
+.condition {
+  overflow-wrap: break-word;
+  white-space: pre-wrap; 
+  word-break: break-word;
+}
+
+.box-info {
+  background-color: #bbd0ff;
+}
+
+.box-nuevo-paciente {
+  height: 100%;
+  border: 2px dashed #a1b4dc;
+  transition: all 0.2s;
+  background-color: #bbd0ff;
+}
+
+.box-nuevo-paciente:hover {
+  border-color: #a1b4dc !important;
+  background-color: #bbd0ff !important;
+}
+
+.box-paciente-listado {
+  height: 100%;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  background-color: #bbd0ff;
+}
+
+.box-paciente-listado:hover {
+  border-color: #a1b4dc !important;
+}
+
+.avatar-plus {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e8f3ff;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.ficha-detalle .condition {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.cambio-estado {
+  cursor: pointer;
+  border: none;
+}
+
+.message-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  background-color: #1d4e89;
+}
+
+.is-danger {
+  background-color: #fa9e9e;
+}
+
+.is-success {
+  background-color: #d4f99f;
+}
