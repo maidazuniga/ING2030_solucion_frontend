@@ -1,0 +1,138 @@
+.landing-pacientes {
+  background-color: #e8f3ff;
+  min-height: 100vh;
+}
+
+.condition {
+  overflow-wrap: break-word;
+  white-space: pre-wrap; 
+  word-break: break-word;
+}
+
+.box-info {
+  background-color: #bbd0ff;
+}
+
+.box-nuevo-paciente {
+  height: 100%;
+  border: 2px dashed #a1b4dc;
+  transition: all 0.2s;
+  background-color: #bbd0ff;
+}
+
+.box-nuevo-paciente:hover {
+  border-color: #a1b4dc !important;
+  background-color: #bbd0ff !important;
+}
+
+.box-paciente-listado {
+  height: 100%;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  background-color: #bbd0ff;
+}
+
+.box-paciente-listado:hover {
+  border-color: #a1b4dc !important;
+}
+
+.avatar-plus {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e8f3ff;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.ficha-detalle .condition {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.cambio-estado {
+  cursor: pointer;
+  border: none;
+}
+
+.message-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  background-color: #1d4e89;
+}
+
+.is-danger {
+  background-color: #fa9e9e;
+}
+
+.is-success {
+  background-color: #d4f99f;
+}
+
+/* Actividades */
+.video-card {
+  background-color: #d1dfff;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  border: 1px solid #a1b4dc;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.video-card:hover {
+  background-color: #a1b4dc;
+}
+
+.video-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #1d4e89;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  margin-right: 12px;
+}
+
+/* Stats */
+.day-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  border: 1px solid #a1b4dc;
+}
+
+.day-dot.is-active {
+  background-color: #1d4e89;
+}
+
+.day-dot.is-empty {
+  background-color: #f0f4ff;
+}
+
+.stats-container {
+  background-color: #d1dfff;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #a1b4dc;
+}
+
+/* Desactivar animaciones en barras de progreso */
+progress {
+  transition: none !important;
+  animation: none !important;
+}
+progress::-webkit-progress-value {
+  transition: none !important;
+}
+progress::-moz-progress-bar {
+  transition: none !important;
+}
