@@ -39,22 +39,23 @@ export default function Patients() {
         </div>
         
         <div className="level-right">
-          <div className="level-item">
-            <div className="buttons has-addons">
-              <button className={`button is-small ${filter === 'all' ? 'is-link is-selected' : ''}`}onClick={() => setFilter('all')}>
-                Todos
-              </button>
-              <button className={`button is-small ${filter === 'active' ? 'is-success is-selected' : ''}`}onClick={() => setFilter('active')}>
-                Activos
-              </button>
-              <button className={`button is-small ${filter === 'inactive' ? 'is-danger is-selected' : ''}`}onClick={() => setFilter('inactive')}>
-                Inactivos
-              </button>
-            </div>
-          </div>
-          {selectedPatient && (
+          {!selectedPatient ? (
             <div className="level-item">
-              <button className="button is-small is-light is-rounded" onClick={() => setSelectedPatientId(null)}>
+              <div className="buttons has-addons">
+                <button className={`button is-small ${filter === 'all' ? 'is-link is-selected' : ''}`}onClick={() => setFilter('all')}>
+                  Todos
+                </button>
+                <button className={`button is-small ${filter === 'active' ? 'is-success is-selected' : ''}`}onClick={() => setFilter('active')}>
+                  Activos
+                </button>
+                <button className={`button is-small ${filter === 'inactive' ? 'is-danger is-selected' : ''}`}onClick={() => setFilter('inactive')}>
+                  Inactivos
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="level-item">
+              <button className="button is-light is-rounded" onClick={() => setSelectedPatientId(null)}>
                 <strong>← Volver al listado</strong>
               </button>
             </div>
@@ -96,12 +97,74 @@ export default function Patients() {
           </div>
 
           <div className="columns">
+            {/* SECCIÓN ACTIVIDADES */}
             <div className="column">
-              <p className="heading has-text-grey-darker">Videos del paciente</p>
+              <p className="heading has-text-grey-darker mb-3">Actividades</p>
+              <div className="columns is-multiline">
+                {selectedPatient.activities && selectedPatient.activities.length > 0 ? (
+                  selectedPatient.activities.map((activity, index) => (
+                    <div key={index} className="column is-6">
+                      <div className="video-card">
+                        <div className="video-icon">▶</div>
+                        <div>
+                          <p className="is-size-7 has-text-weight-bold">{activity.title}</p>
+                          <p className="is-size-7 has-text-grey">{activity.duration}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="column is-12">
+                    <p className="is-size-7 has-text-grey italic">No hay actividades registradas</p>
+                  </div>
+                )}
+              </div>
             </div>
 
+            {/* SECCIÓN STATS */}
             <div className="column">
-              <p className="heading has-text-grey-darker">Stats del paciente</p>
+              <p className="heading has-text-grey-darker mb-3">Actividad Semanal</p>
+              <div className="stats-container">
+                <div className="mb-4">
+                  <div className="level is-mobile mb-2">
+                    <div className="level-left">
+                      <p className="is-size-7 has-text-weight-bold">Progreso de objetivos</p>
+                    </div>
+                    <div className="level-right">
+                      <p className="is-size-7">{selectedPatient.weeklyStats?.completed}/{selectedPatient.weeklyStats?.goal} sesiones</p>
+                    </div>
+                  </div>
+                  <progress 
+                    className="progress is-link is-small" 
+                    value={selectedPatient.weeklyStats?.completed} 
+                    max={selectedPatient.weeklyStats?.goal}
+                  >
+                    {Math.round((selectedPatient.weeklyStats?.completed / selectedPatient.weeklyStats?.goal) * 100)}%
+                  </progress>
+                </div>
+
+                <div>
+                  <p className="is-size-7 has-text-weight-bold mb-2">Registro diario (Últimos 7 días)</p>
+                  <div className="is-flex">
+                    {selectedPatient.weeklyStats?.days.map((active, i) => (
+                      <div key={i} className="has-text-centered mr-2">
+                        <div className={`day-dot ${active ? 'is-active' : 'is-empty'}`}></div>
+                        <p style={{ fontSize: '0.6rem' }} className="has-text-grey">
+                          {['L', 'M', 'M', 'J', 'V', 'S', 'D'][i]}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3" style={{ borderTop: '1px solid #a1b4dc' }}>
+                  <p className="is-size-7 has-text-grey-dark">
+                    {selectedPatient.weeklyStats?.completed >= selectedPatient.weeklyStats?.goal 
+                      ? "¡Objetivo semanal cumplido! 🎉" 
+                      : `Faltan ${selectedPatient.weeklyStats?.goal - selectedPatient.weeklyStats?.completed} sesiones esta semana.`}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
