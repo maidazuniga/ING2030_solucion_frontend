@@ -1,0 +1,86 @@
+.sidebar-vertical-box {
+	width: 13.2rem;
+	min-height: calc(100vh - 2rem);
+	margin: 1rem;
+	padding: 1.25rem;
+	border-radius: 18px;
+	border: 1px solid var(--primary-clear-color);
+	box-shadow: 0 10px 24px rgba(10, 10, 10, 0.08);
+	position: sticky;
+	top: 1rem;
+	background-color: var(--primary-purple);
+}
+
+/* Mobile - esconder sidebar en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+	.navbar.is-primary {
+		background-color: transparent;
+		box-shadow: none;
+		padding: 0.5rem 1rem;
+	}
+
+	.navbar-burger {
+		background-color: var(--primary-purple);
+		border-radius: 12px;
+		padding: 0.5rem 0.75rem;
+	}
+
+	.navbar-burger span {
+		background-color: #ffffff;
+		height: 2px;
+	}
+
+	.sidebar-vertical-box {
+		display: none;
+		width: 100%;
+		min-height: auto;
+		margin: 0;
+		padding: 1rem;
+		border-radius: 0;
+		position: relative;
+		top: 0;
+		box-shadow: none;
+	}
+
+	.sidebar-vertical-box.is-active {
+		display: block;
+	}
+}
+
+/* Desktop - mantener el ancho fijo */
+@media screen and (min-width: 769px) {
+	.sidebar-vertical-box {
+		width: 13.2rem;
+	}
+}
+
+.sidebar-vertical-box .menu-label {
+	margin-bottom: 6rem;
+}
+
+.sidebar-vertical-box .menu-list {
+	margin-top: 0.5rem;
+}
+
+.sidebar-vertical-box .menu-list li + li {
+	margin-top: 1.25rem;
+}
+
+.sidebar-vertical-box .menu-list a {
+	display: block;
+	padding: 0.8rem 1rem;
+	border-radius: 10px;
+	background-color: rgba(255, 255, 255, 0.14);
+	color: #ffffff;
+	transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-vertical-box .menu-list a:hover,
+.sidebar-vertical-box .menu-list a:focus {
+	background-color: #ffffff;
+	color: var(--primary-purple);
+	transform: translateX(4px);
+	text-decoration: none;
+}
+
+

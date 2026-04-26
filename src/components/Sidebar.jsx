@@ -1,18 +1,50 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import "./sideBar.css";
 
 const Sidebar = () => {
+  const [isMenuActive, setIsMenuActive] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuActive(!isMenuActive);
+  };
+
+  const closeMenu = () => {
+    setIsMenuActive(false);
+  };
+
   return (
-    <aside className="menu p-4 has-background-light" style={{ height: '100vh', borderRight: '1px solid #dbdbdb' }}>
-      <p className="menu-label">General</p>
-      <ul className="menu-list">
-        <li>
-          <Link to="/">Inicio</Link>
-        </li>
-        <li>
-          <Link to="/pacientes">Pacientes</Link>
-        </li>
-      </ul>
-    </aside>
+    <>
+      {/* Navbar burger para móvil */}
+      <nav className="navbar is-primary is-hidden-desktop">
+        <div className="navbar-brand">
+          <div
+            className={`navbar-burger ${isMenuActive ? 'is-active' : ''}`}
+            onClick={toggleMenu}
+            role="button"
+            tabIndex="0"
+            onKeyDown={(e) => e.key === 'Enter' && toggleMenu()}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </nav>
+
+      {/* Sidebar */}
+      <aside className={`menu p-4 sidebar-vertical-box ${isMenuActive ? 'is-active' : ''}`}>
+        <p className="menu-label">Logo</p>
+        <ul className="menu-list">
+          <li>
+            <Link to="/" onClick={closeMenu}>Inicio</Link>
+          </li>
+          <li>
+            <Link to="/pacientes" onClick={closeMenu}>Pacientes</Link>
+          </li>
+        </ul>
+      </aside>
+    </>
   );
 };
 
