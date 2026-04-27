@@ -42,6 +42,9 @@ const Sidebar = () => {
           <li>
             <Link to="/pacientes" onClick={closeMenu}>Pacientes</Link>
           </li>
+          <li>
+            <Link to="/actividades" onClick={closeMenu}>Actividades</Link>
+          </li>
         </ul>
       </aside>
     </>
