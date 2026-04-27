@@ -11,7 +11,7 @@ function AppLayout() {
   const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
 
   return (
-    <div className="columns is-gapless" style={{ minHeight: '100vh' }}>
+    <div className="columns is-gapless" style={{ minHeight: '100vh', backgroundColor: '#e8f3ff' }}>
       
       {!isAuthPage && (
         <div className="column is-2">

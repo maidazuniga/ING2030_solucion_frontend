@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "./sideBar.css";
+import "../assets/styles/sideBar.css";
 
 const Sidebar = () => {
   const [isMenuActive, setIsMenuActive] = useState(false);
