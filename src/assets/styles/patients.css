@@ -136,3 +136,19 @@ progress::-webkit-progress-value {
 progress::-moz-progress-bar {
   transition: none !important;
 }
+
+
+/* Modal paciente */
+.patient-modal-card {
+	width: min(920px, calc(100vw - 2rem));
+	border-radius: 14px;
+}
+
+.patient-modal-card .modal-card-head {
+	background-color: #d1dfff;
+	border-bottom: 1px solid #a1b4dc;
+}
+
+.patient-modal-card .modal-card-body {
+	background-color: #e8f3ff;
+}

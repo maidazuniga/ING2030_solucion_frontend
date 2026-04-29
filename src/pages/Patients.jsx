@@ -1,5 +1,4 @@
 ﻿import { useState } from "react";
-import { Link } from "react-router-dom";
 import { mockPatients } from "../data/patients";
 import "../assets/styles/patients.css";
 
@@ -7,8 +6,45 @@ export default function Patients() {
   const [patients, setPatients] = useState(mockPatients);
   const [filter, setFilter] = useState("all");
   const [selectedPatientId, setSelectedPatientId] = useState(null);
+  
+  // ESTADOS PARA EL MODAL DE CREACIÓN 
+  const [isCreateModalActive, setIsCreateModalActive] = useState(false);
+  const [newPatient, setNewPatient] = useState({
+    name: "",
+    age: "",
+    condition: "",
+  });
 
   const selectedPatient = patients.find(p => p.id === selectedPatientId);
+
+  // FUNCIONES DEL MODAL
+  const openCreateModal = () => setIsCreateModalActive(true);
+  const closeCreateModal = () => {
+    setIsCreateModalActive(false);
+    setNewPatient({ name: "", age: "", condition: "" });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPatient(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCreatePatient = (e) => {
+    e.preventDefault();
+    const patientToAdd = {
+      id: Date.now(),
+      name: newPatient.name,
+      age: parseInt(newPatient.age),
+      condition: newPatient.condition,
+      active: true,
+      lastVisit: new Date().toISOString().split('T')[0],
+      activities: [],
+      weeklyStats: { completed: 0, goal: 3, days: [false, false, false, false, false, false, false] }
+    };
+
+    setPatients(prev => [patientToAdd, ...prev]);
+    closeCreateModal();
+  };
 
   const toggleStatus = (id) => {
     setPatients(prev => prev.map(p => 
@@ -42,13 +78,13 @@ export default function Patients() {
           {!selectedPatient ? (
             <div className="level-item">
               <div className="buttons has-addons">
-                <button className={`button is-small ${filter === 'all' ? 'is-link is-selected' : ''}`}onClick={() => setFilter('all')}>
+                <button className={`button is-small ${filter === 'all' ? 'is-link is-selected' : ''}`} onClick={() => setFilter('all')}>
                   Todos
                 </button>
-                <button className={`button is-small ${filter === 'active' ? 'is-success is-selected' : ''}`}onClick={() => setFilter('active')}>
+                <button className={`button is-small ${filter === 'active' ? 'is-success is-selected' : ''}`} onClick={() => setFilter('active')}>
                   Activos
                 </button>
-                <button className={`button is-small ${filter === 'inactive' ? 'is-danger is-selected' : ''}`}onClick={() => setFilter('inactive')}>
+                <button className={`button is-small ${filter === 'inactive' ? 'is-danger is-selected' : ''}`} onClick={() => setFilter('inactive')}>
                   Inactivos
                 </button>
               </div>
@@ -97,7 +133,6 @@ export default function Patients() {
           </div>
 
           <div className="columns">
-            {/* SECCIÓN ACTIVIDADES */}
             <div className="column">
               <p className="heading has-text-grey-darker mb-3">Actividades</p>
               <div className="columns is-multiline">
@@ -121,7 +156,6 @@ export default function Patients() {
               </div>
             </div>
 
-            {/* SECCIÓN STATS */}
             <div className="column">
               <p className="heading has-text-grey-darker mb-3">Actividad Semanal</p>
               <div className="stats-container">
@@ -131,15 +165,14 @@ export default function Patients() {
                       <p className="is-size-7 has-text-weight-bold">Progreso de objetivos</p>
                     </div>
                     <div className="level-right">
-                      <p className="is-size-7">{selectedPatient.weeklyStats?.completed}/{selectedPatient.weeklyStats?.goal} sesiones</p>
+                      <p className="is-size-7">{selectedPatient.weeklyStats?.completed || 0}/{selectedPatient.weeklyStats?.goal || 3} sesiones</p>
                     </div>
                   </div>
                   <progress 
                     className="progress is-link is-small" 
-                    value={selectedPatient.weeklyStats?.completed} 
-                    max={selectedPatient.weeklyStats?.goal}
+                    value={selectedPatient.weeklyStats?.completed || 0} 
+                    max={selectedPatient.weeklyStats?.goal || 3}
                   >
-                    {Math.round((selectedPatient.weeklyStats?.completed / selectedPatient.weeklyStats?.goal) * 100)}%
                   </progress>
                 </div>
 
@@ -156,14 +189,6 @@ export default function Patients() {
                     ))}
                   </div>
                 </div>
-
-                <div className="mt-4 pt-3" style={{ borderTop: '1px solid #a1b4dc' }}>
-                  <p className="is-size-7 has-text-grey-dark">
-                    {selectedPatient.weeklyStats?.completed >= selectedPatient.weeklyStats?.goal 
-                      ? "¡Objetivo semanal cumplido! 🎉" 
-                      : `Faltan ${selectedPatient.weeklyStats?.goal - selectedPatient.weeklyStats?.completed} sesiones esta semana.`}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -172,65 +197,91 @@ export default function Patients() {
         /* LISTADO DE PACIENTES */
         <div className="columns is-multiline">
           
-          {/* AÑADIR NUEVO PACIENTE */}
           <div className="column is-4">
-            <Link to="/crear-paciente" style={{ textDecoration: 'none' }}>
-              <div className="box is-clickable box-nuevo-paciente">
+            <div className="box is-clickable box-nuevo-paciente" onClick={openCreateModal}>
+              <article className="media">
+                <div className="media-left">
+                  <div className="image is-48x48 avatar-plus">
+                    <span className="is-size-4 has-text-grey">+</span>
+                  </div>
+                </div>
+                <div className="media-content">
+                  <div className="content">
+                    <p className="has-text-grey-darker mb-0"><strong>Añadir nuevo paciente</strong></p>
+                    <small className="has-text-grey-darker">Crear ficha de ingreso</small>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          {filteredPatients.map((patient) => (
+            <div key={patient.id} className="column is-4">
+              <div 
+                className="box is-clickable box-paciente-listado" 
+                onClick={() => setSelectedPatientId(patient.id)}
+              >
                 <article className="media">
                   <div className="media-left">
-                    <div className="image is-48x48 avatar-plus">
-                      <span className="is-size-4 has-text-grey">+</span>
-                    </div>
+                    <figure className="image is-48x48">
+                      <img className="is-rounded" src={`https://ui-avatars.com/api/?name=${patient.name}&background=e8f3ff`} alt="Avatar" />
+                    </figure>
                   </div>
                   <div className="media-content">
                     <div className="content">
-                      <p className="has-text-grey-darker mb-0"><strong>Añadir nuevo paciente</strong></p>
-                      <small className="has-text-grey-darker">Crear ficha de ingreso</small>
+                      <p>
+                        <strong>{patient.name}</strong>
+                        <br />
+                        <small className="has-text-grey">{patient.age} años</small>
+                      </p>
                     </div>
+                    <span className={`tag is-small ${patient.active ? 'is-success' : 'is-danger'} is-light`}>
+                      {patient.active ? 'Activo' : 'Inactivo'}
+                    </span>
                   </div>
                 </article>
               </div>
-            </Link>
-          </div>
-
-          {filteredPatients.length > 0 ? (
-            filteredPatients.map((patient) => (
-              <div key={patient.id} className="column is-4">
-                <div 
-                  className="box is-clickable box-paciente-listado" 
-                  onClick={() => setSelectedPatientId(patient.id)}
-                >
-                  <article className="media">
-                    <div className="media-left">
-                      <figure className="image is-48x48">
-                        <img className="is-rounded" src={`https://ui-avatars.com/api/?name=${patient.name}&background=e8f3ff`} alt="Avatar" />
-                      </figure>
-                    </div>
-                    <div className="media-content">
-                      <div className="content">
-                        <p>
-                          <strong>{patient.name}</strong>
-                          <br />
-                          <small className="has-text-grey">{patient.age} años</small>
-                        </p>
-                      </div>
-                      <span className={`tag is-small ${patient.active ? 'is-success' : 'is-danger'} is-light`}>
-                        {patient.active ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </div>
-                  </article>
-                </div>
-              </div>
-            ))
-          ) : (
-            filter !== 'all' && (
-              <div className="column is-8 has-text-centered py-6">
-                <p className="is-size-4 has-text-grey-light">No hay pacientes que coincidan con este filtro.</p>
-              </div>
-            )
-          )}
+            </div>
+          ))}
         </div>
       )}
+
+      {/* MODAL DE CREACIÓN */}
+      <div className={`modal ${isCreateModalActive ? 'is-active' : ''}`}>
+        <div className="modal-background" onClick={closeCreateModal}></div>
+        <div className="modal-card patient-modal-card">
+          <header className="modal-card-head">
+            <p className="modal-card-title">Ingresar Nuevo Paciente</p>
+            <button className="delete" aria-label="close" onClick={closeCreateModal}></button>
+          </header>
+          <section className="modal-card-body">
+            <form onSubmit={handleCreatePatient}>
+              <div className="field">
+                <label className="label">Nombre Completo</label>
+                <div className="control">
+                  <input className="input" type="text" name="name" value={newPatient.name} onChange={handleInputChange} required placeholder="Ej: Juan Pérez" />
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">Edad</label>
+                <div className="control">
+                  <input className="input" type="number" name="age" value={newPatient.age} onChange={handleInputChange} required placeholder="Ej: 7" />
+                </div>
+              </div>
+              <div className="field">
+                <label className="label">Condición Sensorial / Observaciones</label>
+                <div className="control">
+                  <textarea className="textarea" name="condition" value={newPatient.condition} onChange={handleInputChange} required placeholder="Describe la condición..."></textarea>
+                </div>
+              </div>
+              <div className="buttons is-right mt-5">
+                <button type="button" className="button" onClick={closeCreateModal}>Cancelar</button>
+                <button type="submit" className="button is-link">Crear Paciente</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
     </section>
   );
 }

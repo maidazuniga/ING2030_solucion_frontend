@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import Sidebar from "./components/Sidebar.jsx";
 import Home from "./pages/Home.jsx";
 import Patients from "./pages/Patients.jsx";
-import NewPatient from "./pages/CreatePatient.jsx";
 import Activities from "./pages/Activities.jsx";
 
 function AppLayout() {
@@ -24,7 +23,6 @@ function AppLayout() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/pacientes" element={<Patients />} />
-            <Route path="/crear-paciente" element={<NewPatient />} />
             <Route path="/actividades" element={<Activities />} />
           </Routes>
         </main>

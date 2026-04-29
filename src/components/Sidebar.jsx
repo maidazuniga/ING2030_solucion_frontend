@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../assets/styles/sideBar.css";
+import logoPulpo from "../assets/pulpo1.png"
 
 const Sidebar = () => {
   const [isMenuActive, setIsMenuActive] = useState(false);
@@ -34,7 +35,11 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <aside className={`menu p-4 sidebar-vertical-box ${isMenuActive ? 'is-active' : ''}`}>
-        <p className="menu-label">Logo</p>
+        <div className="sidebar-logo-container has-text-centered mb-6">
+          <Link to="/" onClick={closeMenu}>
+            <img src={logoPulpo} alt="Logo Pulpo" className="sidebar-logo pulpo-logo" />
+          </Link>
+        </div>
         <ul className="menu-list">
           <li>
             <Link to="/" onClick={closeMenu}>Inicio</Link>
