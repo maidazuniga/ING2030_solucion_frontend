@@ -36,9 +36,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <aside className={`menu p-4 sidebar-vertical-box ${isMenuActive ? 'is-active' : ''}`}>
         <div className="sidebar-logo-container has-text-centered mb-6">
-          <Link to="/" onClick={closeMenu}>
-            <img src={logoPulpo} alt="Logo Pulpo" className="sidebar-logo pulpo-logo" />
-          </Link>
+          <img src={logoPulpo} alt="Logo Pulpo" className="sidebar-logo pulpo-logo" />
         </div>
         <ul className="menu-list">
           <li>

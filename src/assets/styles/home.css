@@ -1,0 +1,19 @@
+.home-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 3rem !important;
+}
+
+.pulpo-fluid {
+    width: 100%;
+    height: auto;
+    /* max-height: 100%; */
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.pulpo-fluid:hover {
+    transform: scale(1.02);
+}
