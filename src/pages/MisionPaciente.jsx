@@ -3,52 +3,141 @@ import { Link, useNavigate } from 'react-router-dom';
 import FormularioSatisfaccion from '../components/FormularioSatisfaccion';
 
 const HISTORIAL_STORAGE_KEY = 'eco-habito-historial-misiones';
-const MISSION_DURATION_SECONDS = 40;
+const MIN_MISSION_DURATION_SECONDS = 40;
+const MAX_MISSION_DURATION_SECONDS = 120;
 const COUNTDOWN_START = 3;
 const FLASH_DURATION_MS = 900;
+
+const OCTOPUS_IMAGES = {
+  base: '/pulpo/pulpo-base.png',
+  contento: '/pulpo/pulpo-contento.png',
+  texturas: '/pulpo/pulpo-texturas.png',
+  antiEstres: '/pulpo/pulpo-pelota-anti-estres.png'
+};
+
+function formatDuration(seconds) {
+  if (seconds > 60) {
+    const minutes = Math.floor(seconds / 60);
+    const extraSeconds = String(seconds % 60).padStart(2, '0');
+
+    return `${minutes}:${extraSeconds} min`;
+  }
+
+  return `${seconds} segundos`;
+}
+
+function formatTimer(seconds) {
+  if (seconds >= 60) {
+    const minutes = Math.floor(seconds / 60);
+    const extraSeconds = String(seconds % 60).padStart(2, '0');
+
+    return `${minutes}:${extraSeconds} min`;
+  }
+
+  return `${seconds} s`;
+}
+
+function getRandomMissionDuration() {
+  return Math.floor(
+    Math.random() * (MAX_MISSION_DURATION_SECONDS - MIN_MISSION_DURATION_SECONDS + 1)
+  ) + MIN_MISSION_DURATION_SECONDS;
+}
+
+function createMission(mission) {
+  const durationSeconds = getRandomMissionDuration();
+  const durationLabel = formatDuration(durationSeconds);
+
+  return {
+    ...mission,
+    durationSeconds,
+    title: `${mission.baseTitle} - ${durationLabel}`,
+    instruction: `${mission.action} por ${durationLabel}.`
+  };
+}
+
+function getOctopusState(phase, mission) {
+  if (phase === 'flash') {
+    return {
+      src: OCTOPUS_IMAGES.contento,
+      alt: 'Pulpo contento',
+      message: '¡Lo lograste!'
+    };
+  }
+
+  if (phase === 'running') {
+    if (mission.id === 'gomosa') {
+      return {
+        src: OCTOPUS_IMAGES.antiEstres,
+        alt: 'Pulpo pelota anti estrés',
+        message: 'Pelota anti estrés'
+      };
+    }
+
+    return {
+      src: OCTOPUS_IMAGES.texturas,
+      alt: 'Pulpo texturas',
+      message: 'Texturas'
+    };
+  }
+
+  if (phase === 'intro' || phase === 'countdown' || phase === 'between') {
+    return {
+      src: OCTOPUS_IMAGES.base,
+      alt: 'Pulpo base',
+      message: 'Tu próxima misión te espera'
+    };
+  }
+
+  return null;
+}
 
 const missionBank = [
   {
     id: 'rugosa',
-    title: 'Textura rugosa',
-    instruction: 'Toca la textura rugosa por 40 segundos.',
+    baseTitle: 'Textura rugosa',
+    action: 'Toca la textura rugosa',
     hint: 'Usa la yema de tus dedos y muévete despacito.',
+    materials: ['Pelota rugosa', 'Cepillo de cerdas duras', 'Piedra texturizada'],
     icon: 'fa-hand-back-fist',
     accent: '#ff7b7b',
     soft: '#fff1f1'
   },
   {
     id: 'aspera',
-    title: 'Textura áspera',
-    instruction: 'Pasa tu mano por la textura áspera por 40 segundos.',
+    baseTitle: 'Textura áspera',
+    action: 'Pasa tu mano por la textura áspera',
     hint: 'Siente cómo cambia la superficie con calma.',
+    materials: ['Lija suave', 'Cartón corrugado', 'Tela áspera'],
     icon: 'fa-hippo',
     accent: '#f4a261',
     soft: '#fff4e8'
   },
   {
     id: 'lisa',
-    title: 'Textura lisa',
-    instruction: 'Desliza tus dedos sobre la textura lisa por 40 segundos.',
+    baseTitle: 'Textura lisa',
+    action: 'Desliza tus dedos sobre la textura lisa',
     hint: 'Busca una sensación suave y sin bultitos.',
+    materials: ['Plancha lisa', 'Vaso plástico liso', 'Tarjeta laminada'],
     icon: 'fa-water',
     accent: '#4dabf7',
     soft: '#edf7ff'
   },
   {
     id: 'suave',
-    title: 'Textura suave',
-    instruction: 'Aprieta con cuidado la textura suave por 40 segundos.',
+    baseTitle: 'Textura suave',
+    action: 'Aprieta con cuidado la textura suave',
     hint: 'Hazlo como si estuvieras acariciando una nube.',
+    materials: ['Peluche suave', 'Algodón', 'Tela de microfibra'],
     icon: 'fa-cloud',
     accent: '#7bdcb5',
     soft: '#effcf6'
   },
   {
     id: 'gomosa',
-    title: 'Textura gomosa',
-    instruction: 'Aprieta la textura gomosa por 40 segundos sin hacer fuerza.',
+    baseTitle: 'Textura gomosa',
+    action: 'Aprieta la textura gomosa sin hacer fuerza',
     hint: 'Siente cómo rebota y vuelve a su lugar.',
+    materials: ['Pelota antiestrés', 'Goma elástica', 'Esponja blanda'],
     icon: 'fa-hand-sparkles',
     accent: '#8a6cff',
     soft: '#f3efff'
@@ -109,11 +198,11 @@ function loadHistory() {
 
 export default function MisionPaciente() {
   const navigate = useNavigate();
-  const [missions] = useState(() => shuffleArray(missionBank));
+  const [missions] = useState(() => shuffleArray(missionBank.map(createMission)));
   const [currentMissionIndex, setCurrentMissionIndex] = useState(0);
   const [phase, setPhase] = useState('intro');
   const [countdown, setCountdown] = useState(COUNTDOWN_START);
-  const [remainingSeconds, setRemainingSeconds] = useState(MISSION_DURATION_SECONDS);
+  const [remainingSeconds, setRemainingSeconds] = useState(() => missions[0]?.durationSeconds ?? MIN_MISSION_DURATION_SECONDS);
   const [showSuccessFlash, setShowSuccessFlash] = useState(false);
   const [showFormulario, setShowFormulario] = useState(false);
   const [showFinalAction, setShowFinalAction] = useState(false);
@@ -122,7 +211,9 @@ export default function MisionPaciente() {
 
   const currentMission = missions[currentMissionIndex];
   const isLastMission = currentMissionIndex === missions.length - 1;
-  const missionProgress = Math.round(((MISSION_DURATION_SECONDS - remainingSeconds) / MISSION_DURATION_SECONDS) * 100);
+  const missionProgress = Math.round(((currentMission.durationSeconds - remainingSeconds) / currentMission.durationSeconds) * 100);
+  const currentMissionMaterials = currentMission.materials ?? [];
+  const octopusState = getOctopusState(phase, currentMission);
 
   const styles = {
     bgMint: { backgroundColor: '#eefcf7' },
@@ -140,7 +231,7 @@ export default function MisionPaciente() {
         if (value <= 1) {
           window.clearInterval(intervalId);
           setPhase('running');
-          setRemainingSeconds(MISSION_DURATION_SECONDS);
+          setRemainingSeconds(currentMission.durationSeconds);
           return COUNTDOWN_START;
         }
 
@@ -149,7 +240,7 @@ export default function MisionPaciente() {
     }, 1000);
 
     return () => window.clearInterval(intervalId);
-  }, [phase, currentMissionIndex]);
+  }, [phase, currentMissionIndex, currentMission.durationSeconds]);
 
   useEffect(() => {
     if (phase !== 'running') {
@@ -323,13 +414,32 @@ export default function MisionPaciente() {
                         border: `3px solid ${currentMission.accent}`
                       }}
                     >
-                      <p className="is-size-4 mb-2" style={styles.textOcto}>
-                        <i className={`fa-solid ${currentMission.icon} mr-2`}></i>{currentMission.title}
+                      {octopusState && (
+                        <div className="mb-4">
+                          <figure className="image mx-auto" style={{ maxWidth: '240px' }}>
+                            <img src={octopusState.src} alt={octopusState.alt} />
+                          </figure>
+                          <div className="mt-3">
+                            <span className="tag is-rounded is-white is-medium has-text-weight-semibold">
+                              {octopusState.message}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      <p className="is-size-4 mb-3 has-text-weight-semibold" style={styles.textOcto}>
+                        Materiales necesarios
                       </p>
-                      <p className="subtitle is-5 mb-3">{currentMission.hint}</p>
-                      <div className="tags is-centered">
+                      <div className="content has-text-left is-size-5">
+                        <ul className="mb-0">
+                          {currentMissionMaterials.map((material) => (
+                            <li key={material}>{material}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="tags is-centered mt-4">
                         <span className="tag is-rounded is-white">{currentMissionLabel}</span>
-                        <span className="tag is-rounded is-white">40 segundos</span>
+                        <span className="tag is-rounded is-white">{formatDuration(currentMission.durationSeconds)}</span>
                       </div>
                     </div>
                   </div>
@@ -337,9 +447,6 @@ export default function MisionPaciente() {
                   <div className="column is-7">
                     {phase === 'intro' && (
                       <div className="has-text-centered">
-                        <span className="icon is-large mb-4">
-                          <i className={`fa-solid ${currentMission.icon} fa-4x`} style={{ color: currentMission.accent }}></i>
-                        </span>
                         <h1 className="title is-2 mb-3" style={styles.textOcto}>{currentMission.instruction}</h1>
                         <p className="is-size-5 mb-5">Presiona comenzar y Octo te va a guiar paso a paso.</p>
                         <button className="button is-success is-large is-rounded" onClick={startMission}>
@@ -376,7 +483,7 @@ export default function MisionPaciente() {
                         <h1 className="title is-3 mb-4" style={styles.textOcto}>{currentMission.instruction}</h1>
                         <div className="box p-5" style={{ borderRadius: '22px', border: '3px solid #d6f5e8' }}>
                           <p className="is-size-4 mb-2">Tiempo restante</p>
-                          <p className="title is-1 mb-3" style={styles.textOcto}>{remainingSeconds}s</p>
+                          <p className="title is-1 mb-3" style={styles.textOcto}>{formatTimer(remainingSeconds)}</p>
                           <progress className="progress is-success is-large" value={missionProgress} max="100">{missionProgress}%</progress>
                         </div>
                         {showEasterEggButton && (
@@ -389,9 +496,6 @@ export default function MisionPaciente() {
 
                     {phase === 'between' && (
                       <div className="has-text-centered">
-                        <span className="icon is-large mb-4">
-                          <i className={`fa-solid ${currentMission.icon} fa-4x`} style={{ color: currentMission.accent }}></i>
-                        </span>
                         <h2 className="title is-2 mb-3" style={styles.textOcto}>{currentMission.title}</h2>
                         <p className="subtitle is-4 mb-3">{currentMission.instruction}</p>
                         <p className="is-size-5 mb-5">
@@ -439,7 +543,9 @@ export default function MisionPaciente() {
           }}
         >
           <div className="has-text-centered has-text-white">
-            <span className="icon is-large mb-3"><i className="fa-solid fa-check fa-5x"></i></span>
+            <figure className="image mx-auto mb-3" style={{ maxWidth: '260px' }}>
+              <img src={OCTOPUS_IMAGES.contento} alt="Pulpo contento" />
+            </figure>
             <p className="title is-2 has-text-white">¡Lo lograste!</p>
           </div>
         </div>

@@ -37,19 +37,28 @@ export default function VistaPaciente() {
           <div className="columns is-centered animate__animated animate__fadeIn">
             <div className="column is-8 text-center">
               <div className="box p-6 has-text-centered" style={styles.cardOcto}>
-                <span className="icon is-large mb-5"><i className="fa-solid fa-ghost fa-5x" style={styles.textOcto}></i></span>
-                <h1 className="title is-1 font-weight-bold" style={styles.textOcto}>¡Hola Matías! 👋</h1>
-                <h2 className="subtitle is-3 mt-2">Tu amigo <strong>Octo</strong> te estaba esperando.</h2>
-                <div className="notification is-warning is-light is-size-5 mt-4">
-                  <i className="fa-solid fa-star mr-2"></i><strong>¡Tu siguiente misión te espera!</strong>
-                </div>
-                <div className="buttons is-centered mt-5">
-                  <Link to="/vista-pacientes/mision" className="button is-success is-large is-rounded">
-                    <strong>¡COMENZAR MISIÓN! 🚀</strong>
-                  </Link>
-                  <Link to="/vista-pacientes/historial" className="button is-light is-rounded is-small" style={{ alignSelf: 'center' }}>
-                    <strong>Misiones pasadas</strong>
-                  </Link>
+                <div className="columns is-vcentered is-variable is-6">
+                  <div className="column is-narrow">
+                    <figure className="image" style={{ width: '220px' }}>
+                      <img src="/pulpo/pulpo-base.png" alt="Pulpo base" />
+                    </figure>
+                  </div>
+
+                  <div className="column has-text-centered">
+                    <h1 className="title is-1 font-weight-bold" style={styles.textOcto}>¡Hola Matías! 👋</h1>
+                    <h2 className="subtitle is-3 mt-2">Tu amigo <strong>Octo</strong> te estaba esperando.</h2>
+                    <div className="notification is-warning is-light is-size-5 mt-4 has-text-centered">
+                      <i className="fa-solid fa-star mr-2"></i><strong>¡Tu próxima misión te espera!</strong>
+                    </div>
+                    <div className="buttons is-centered mt-5">
+                      <Link to="/vista-pacientes/mision" className="button is-success is-large is-rounded">
+                        <strong>¡COMENZAR MISIÓN! 🚀</strong>
+                      </Link>
+                      <Link to="/vista-pacientes/historial" className="button is-light is-rounded is-small" style={{ alignSelf: 'center' }}>
+                        <strong>Misiones pasadas</strong>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
